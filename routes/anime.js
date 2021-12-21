@@ -6,7 +6,8 @@ const router = express.Router()
 const API_URL = process.env.API_URL
 
 router.get('/:id', async (req, res)=>{
-    let URL = `${API_URL}${req.baseUrl}/${req.params.id}`
+    let URL = "https://weeb-list-api.herokuapp.com/anime/38671"
+    // let URL = `${API_URL}${req.baseUrl}/${req.params.id}`
     try {
         const anime = await axios.get(URL);
         res.json(anime.data)
