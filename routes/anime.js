@@ -8,12 +8,28 @@ const API_URL = process.env.API_URL
 router.get('/:id', async (req, res)=>{
     let id = req.params.id
     let URL = API_URL + "/anime/" + id;
+    
+    let animeData;
+
     try {
-        const anime = await axios.get(URL);
-        res.json(anime.data)
+        animeData = await axios.get(URL);
     } catch (error) {
         res.json(error.message)
     }
+
+    let characters;
+    URL += "/characters_staff"
+    try {
+        characters = await axios.get(URL);
+        animeData.data.characters = characters.data.characters;;
+        res.json(animeData.data);
+    } catch (error) {
+        res.json(error.message)
+    }
+
+
+
+
 })
 
 router.get('/top/:page', async (req, res)=>{
