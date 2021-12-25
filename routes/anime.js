@@ -2,8 +2,15 @@ require("dotenv").config()
 
 const axios = require("axios")
 const express = require("express");
+const genres = require('../genre.json');
 const router = express.Router()
+
 const API_URL = process.env.API_URL
+const CLIENT_ID = process.env.CLIENT_ID
+
+router.get('/genre', async (req, res) => {
+    res.json(genres);
+})
 
 router.get('/:id', async (req, res)=>{
     let id = req.params.id
@@ -26,11 +33,15 @@ router.get('/:id', async (req, res)=>{
     } catch (error) {
         res.json(error.message)
     }
-
-
-
-
 })
+
+
+
+router.get('/season', async(req, res) => {
+    console.log("Test")
+})
+
+
 
 router.get('/top/:page', async (req, res)=>{
     let page = req.params.page

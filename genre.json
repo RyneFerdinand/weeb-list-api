@@ -1,0 +1,94 @@
+[
+        {
+        "genreID": 1,
+        "genreName": "Action"
+    },
+    {
+        "genreID": 2,
+        "genreName": "Adventure"
+    },
+    {
+        "genreID": 4,
+        "genreName": "Comedy"
+    },
+    {
+        "genreID": 5,
+        "genreName": "Avante Garde"
+    },
+    {
+        "genreID": 7,
+        "genreName": "Mystery"
+    },
+    {
+        "genreID": 8,
+        "genreName": "Drama"
+    },
+    {
+        "genreID": 9,
+        "genreName": "Ecchi"
+    },
+    {
+        "genreID": 10,
+        "genreName": "Fantasy"
+    },
+    {
+        "genreID": 14,
+        "genreName": "Horror"
+    },
+    {
+        "genreID": 22,
+        "genreName": "Romance"
+    },
+    {
+        "genreID": 24,
+        "genreName": "Sci-Fi"
+    },
+    {
+        "genreID": 25,
+        "genreName": "Shoujo"
+    },
+    {
+        "genreID": 26,
+        "genreName": "Yuri"
+    },
+    {
+        "genreID": 27,
+        "genreName": "Shounen"
+    },
+    {
+        "genreID": 28,
+        "genreName": "Yaoi"
+    },
+    {
+        "genreID": 30,
+        "genreName": "Sports"
+    },
+    {
+        "genreID": 35,
+        "genreName": "Harem"
+    },
+    {
+        "genreID": 36,
+        "genreName": "Slice of Life"
+    },
+    {
+        "genreID": 37,
+        "genreName": "Supernatural"
+    },
+    {
+        "genreID": 40,
+        "genreName": "Psychological"
+    },
+    {
+        "genreID": 41,
+        "genreName": "Suspense"
+    },
+    {
+        "genreID": 42,
+        "genreName": "Seinen"
+    },
+    {
+        "genreID": 43,
+        "genreName": "Josei"
+    }
+]
