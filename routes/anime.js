@@ -2,14 +2,46 @@ require("dotenv").config()
 
 const axios = require("axios")
 const express = require("express");
-const genres = require('../genre.json');
+const genres = require('../JSON/genre.json');
+const sortBy = require('../JSON/sortBy.json');
+const seasons = require('../JSON/season.json');
 const router = express.Router()
 
 const API_URL = process.env.API_URL
 const CLIENT_ID = process.env.CLIENT_ID
 
-router.get('/genre', async (req, res) => {
+router.get('/search', async (req, res) => {
+    let URL = API_URL + "/search/anime?q="; 
+    if(req.query.q){
+        URL += encodeURI(req.query.q);
+    } else {
+        URL += (req.query.genre ? "&genre=" + req.query.genre : "")
+        URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
+        URL += (req.query.order_by2 ? ("&order_by2=" + req.query.order_by2) : "");
+        URL += "&sort=desc";
+        URL += "&page=" + (req.query.page ? req.query.page : 1);
+    }
+
+    console.log(URL);
+    
+    try {
+        let anime = await axios.get(URL);
+        res.json(anime.data);
+    } catch (error) {
+        res.json(error.message)
+    }
+})
+
+router.get('/genre', (req, res) => {
     res.json(genres);
+})
+
+router.get('/sort', (req, res) => {
+    res.json(sortBy);
+})
+
+router.get('/season', (req, res) => {
+    res.json(seasons);
 })
 
 router.get('/:id', async (req, res)=>{
@@ -34,14 +66,6 @@ router.get('/:id', async (req, res)=>{
         res.json(error.message)
     }
 })
-
-
-
-router.get('/season', async(req, res) => {
-    console.log("Test")
-})
-
-
 
 router.get('/top/:page', async (req, res)=>{
     let page = req.params.page

@@ -1,0 +1,14 @@
+[
+    {
+        "sortBy": "title"
+    },
+    {
+        "sortBy": "start_date"
+    },
+    {
+        "sortBy": "score"
+    },
+    {
+        "sortBy": "members"
+    }
+]
