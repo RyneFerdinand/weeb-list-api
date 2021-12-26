@@ -14,21 +14,33 @@ router.get('/search', async (req, res) => {
     let URL = API_URL + "/search/anime?q="; 
     if(req.query.q){
         URL += encodeURI(req.query.q);
+        URL += "&page=1";
     } else {
-        URL += (req.query.genre ? "&genre=" + req.query.genre : "")
-        URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
-        URL += (req.query.order_by2 ? ("&order_by2=" + req.query.order_by2) : "");
-        URL += "&sort=desc";
-        URL += "&page=" + (req.query.page ? req.query.page : 1);
+        if(req.query.season){
+            URL = API_URL +  "/season/" + req.query.year + "/" + req.query.season;
+        } else {
+            URL += (req.query.genre ? "&genre=" + req.query.genre : "")
+            URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
+            URL += "&sort=desc";
+            URL += "&limit=" + (req.query.limit ? req.query.limit : 50);
+            URL += (req.query.season ? "&season=" + req.query.season : "");
+        }
     }
 
-    console.log(URL);
-    
+    console.log(URL)
     try {
         let anime = await axios.get(URL);
-        res.json(anime.data);
+
+        anime = anime.data;
+        if(req.query.season){
+            anime["results"] = anime["anime"];
+            delete anime["anime"];
+        }
+        
+        res.json(anime);
     } catch (error) {
         res.json(error.message)
+        
     }
 })
 
@@ -62,19 +74,6 @@ router.get('/:id', async (req, res)=>{
         characters = await axios.get(URL);
         animeData.data.characters = characters.data.characters;;
         res.json(animeData.data);
-    } catch (error) {
-        res.json(error.message)
-    }
-})
-
-router.get('/top/:page', async (req, res)=>{
-    let page = req.params.page
-    let URL = API_URL + "/top/anime/" + page
-
-    console.log(URL)
-    try {
-        const anime = await axios.get(URL);
-        res.json(anime.data)
     } catch (error) {
         res.json(error.message)
     }
