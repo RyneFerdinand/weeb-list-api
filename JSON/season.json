@@ -1,14 +1,18 @@
 [
     {
-        "season": "Winter"
+        "season": "Winter",
+        "month": ["Jan", "Feb", "Mar"]
     },
     {
-        "season": "Spring"
+        "season": "Spring",
+        "month": ["Apr", "May", "Jun"]
     },
     {
-        "season": "Summer"
+        "season": "Summer",
+        "month": ["Jul", "Aug", "Sep"]
     },
     {
-        "season": "Fall"
+        "season": "Fall",
+        "month": ["Oct", "Nov", "Dec"]
     }
 ]

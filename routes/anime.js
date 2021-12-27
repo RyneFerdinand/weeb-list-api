@@ -5,10 +5,21 @@ const express = require("express");
 const genres = require('../JSON/genre.json');
 const sortBy = require('../JSON/sortBy.json');
 const seasons = require('../JSON/season.json');
+const home = require('../JSON/home.json');
+const { json } = require("express/lib/response");
 const router = express.Router()
 
 const API_URL = process.env.API_URL
-const CLIENT_ID = process.env.CLIENT_ID
+
+router.get('/home', async (req, res) => {
+    let URL = API_URL + "/top/anime/1";
+    let animeList = [];
+
+    home.forEach(anime=>{
+        animeList.push(anime.anime);
+    })
+    res.json(animeList);
+})
 
 router.get('/search', async (req, res) => {
     let URL = API_URL + "/search/anime?q="; 
@@ -20,14 +31,14 @@ router.get('/search', async (req, res) => {
             URL = API_URL +  "/season/" + req.query.year + "/" + req.query.season;
         } else {
             URL += (req.query.genre ? "&genre=" + req.query.genre : "")
-            URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
+             URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
             URL += "&sort=desc";
-            URL += "&limit=" + (req.query.limit ? req.query.limit : 50);
+            URL += "&limit=" + (req.query.limit ? req.query.limit : 1000);
             URL += (req.query.season ? "&season=" + req.query.season : "");
         }
     }
 
-    console.log(URL)
+    console.log(URL);
     try {
         let anime = await axios.get(URL);
 
@@ -36,7 +47,6 @@ router.get('/search', async (req, res) => {
             anime["results"] = anime["anime"];
             delete anime["anime"];
         }
-        
         res.json(anime);
     } catch (error) {
         res.json(error.message)

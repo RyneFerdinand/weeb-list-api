@@ -1,0 +1,43 @@
+[
+    {
+        "status": "Now Airing",
+        "anime":
+        {
+            "mal_id": 47778,
+            "firstTitle": "Now",
+            "secondTitle": "Airing",
+            "title": "Kimetsu no Yaiba: Yuukaku-hen",
+            "genre": "Action, Supernatural",
+            "show": "TV",
+            "description": "Tanjirou, Zenitsu, and Inosuke, aided by the Sound Hashira Tengen Uzui, travel to Yoshiwara red light district to hunt down a demon that has been terrorizing the town.",
+            "image": "https://static1.colliderimages.com/wordpress/wp-content/uploads/2021/10/Demon-Slayer-Kimetsu-no-Yaiba-Season-2.jpg"
+        }
+    },
+    {
+        "status": "Up Coming",
+        "anime":{
+            "mal_id": 40356,
+            "firstTitle": "Up",
+            "secondTitle": "Coming",
+            "title": "Tate no Yuusha no Nariagari Season 2",
+            "genre": "Action, Adventure, Drama, Fantasy",
+            "show": "TV",
+            "description": "Second season of Tate no Yuusha no Nariagari.",
+            "date": "Apr 2022", 
+            "image": "https://i0.wp.com/animesaku.com/wp-content/uploads/2020/09/Season-2-Tate-no-Yuusha-Siap-Dirilis-2021.jpg?fit=1000%2C563&ssl=1"
+        }
+    },
+    {
+        "status": "Winter 2022 Anime",
+        "anime":{
+            "mal_id": 48583,
+            "firstTitle": "Winter 2022",
+            "secondTitle": "Anime",
+            "title": "Attack on Titan Final Season 4 part 2", 
+            "genre": "Action, Drama, Fantasy, Mystery",
+            "show": "TV",
+            "description": "Second part of Shingeki no Kyojin: The Final Season.",
+            "image": "https://gamerwk.sgp1.cdn.digitaloceanspaces.com/2021/12/attack-on-titan-final-season-visual.png"
+        }
+    }
+]
