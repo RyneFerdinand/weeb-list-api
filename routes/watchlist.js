@@ -13,3 +13,5 @@ router.get('/', async (req, res) => {
     })
     res.json(animeList);
 })
+
+module.exports = router

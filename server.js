@@ -17,7 +17,7 @@ app.use(cors());
 
 
 const animeRouter = require("./routes/anime");
-const watchlistRouter = require("./router/watchlist");
+const watchlistRouter = require("./routes/watchlist");
 
 app.use('/anime', animeRouter);
 app.use('/watchlist', watchlistRouter);

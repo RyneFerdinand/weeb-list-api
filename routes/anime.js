@@ -5,20 +5,61 @@ const express = require("express");
 const genres = require('../JSON/genre.json');
 const sortBy = require('../JSON/sortBy.json');
 const seasons = require('../JSON/season.json');
-const home = require('../JSON/home.json');
+const carousel = require('../JSON/carousel.json');
 const { json } = require("express/lib/response");
 const router = express.Router()
 
 const API_URL = process.env.API_URL
+const API2_URL = process.env.API2_URL
 
 router.get('/home', async (req, res) => {
-    let URL = API_URL + "/top/anime/1";
-    let animeList = [];
+    let animeData = {
+        carousel: [],
+        recommendation: []
+    };
 
-    home.forEach(anime=>{
-        animeList.push(anime.anime);
+    carousel.forEach(carousel=>{
+        animeData.carousel.push(carousel);
     })
-    res.json(animeList);
+
+    let season = seasons[Math.floor(new Date().getMonth() / 3)].season.toLowerCase();
+    let year = new Date().getFullYear();
+    let URL = `${API2_URL}anime/season/${year}/${season}?limit=10`;
+
+    try {
+        console.log(URL);
+        let seasonals = await axios.get(URL, {
+            headers:{
+                "X-MAL-CLIENT-ID": process.env.CLIENT_ID
+            }
+        })
+        animeData.seasonal = seasonals.data.data;
+    } catch (error) {
+        res.json(error.message);
+    }
+    
+    let animeID = [2904, 39486, 35180, 4181, 32935, 1, 33050, 37521, 40748, 3786];
+    animeID.forEach(async (id, idx)=>{
+        try {
+            URL = `${API2_URL}anime/${id}?fields=id,title,main_picture`
+            let anime = await axios.get(URL, {
+                headers: {
+                    "X-MAL-CLIENT-ID": process.env.CLIENT_ID
+                }
+            })
+            animeData.recommendation.push(anime.data);
+            if(idx === animeID.length - 1){
+                setTimeout(() => {
+                    res.json(animeData)
+                }, 500);
+            }
+
+        } catch (error) {
+            res.json(error.message);
+        }
+    })
+
+    // res.json(animeData);
 })
 
 router.get('/search', async (req, res) => {
@@ -33,7 +74,7 @@ router.get('/search', async (req, res) => {
             URL += (req.query.genre ? "&genre=" + req.query.genre : "")
              URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
             URL += "&sort=desc";
-            URL += "&limit=" + (req.query.limit ? req.query.limit : 1000);
+            URL += "&limit=" + (req.query.limit ? req.query.limit : 50);
             URL += (req.query.season ? "&season=" + req.query.season : "");
         }
     }
