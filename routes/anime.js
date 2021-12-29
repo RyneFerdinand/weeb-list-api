@@ -27,7 +27,6 @@ router.get('/home', async (req, res) => {
     let URL = `${API2_URL}anime/season/${year}/${season}?limit=10`;
 
     try {
-        console.log(URL);
         let seasonals = await axios.get(URL, {
             headers:{
                 "X-MAL-CLIENT-ID": process.env.CLIENT_ID
@@ -58,8 +57,6 @@ router.get('/home', async (req, res) => {
             res.json(error.message);
         }
     })
-
-    // res.json(animeData);
 })
 
 router.get('/search', async (req, res) => {
@@ -72,14 +69,13 @@ router.get('/search', async (req, res) => {
             URL = API_URL +  "/season/" + req.query.year + "/" + req.query.season;
         } else {
             URL += (req.query.genre ? "&genre=" + req.query.genre : "")
-             URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
+            URL += "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
             URL += "&sort=desc";
             URL += "&limit=" + (req.query.limit ? req.query.limit : 50);
             URL += (req.query.season ? "&season=" + req.query.season : "");
         }
     }
 
-    console.log(URL);
     try {
         let anime = await axios.get(URL);
 
@@ -114,17 +110,28 @@ router.get('/:id', async (req, res)=>{
     let animeData;
 
     try {
-        animeData = await axios.get(URL);
+        anime = await axios.get(URL);
+        animeData = anime.data;
     } catch (error) {
         res.json(error.message)
     }
-
+    
     let characters;
     URL += "/characters_staff"
+    
     try {
         characters = await axios.get(URL);
-        animeData.data.characters = characters.data.characters;;
-        res.json(animeData.data);
+        animeData.characters = characters.data.characters;
+    } catch (error) {
+        res.json(error.message)
+    }
+    
+    let recommendations;
+    URL = API_URL + "/anime/" + id + "/recommendations"
+    try {
+        recommendations = await axios.get(URL);
+        animeData.recommendations = recommendations.data.recommendations;
+        res.json(animeData);
     } catch (error) {
         res.json(error.message)
     }
