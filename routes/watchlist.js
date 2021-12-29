@@ -28,7 +28,31 @@ router.post('/add', async (req, res) => {
     } catch (error) {
         res.json(error.message);
     }
+})
 
+router.patch('/update', async(req, res) => {
+    let watchlist;
+    try {
+        watchlist = await Watchlist.findById(req.body.id);
+        if(req.body.status != null){
+            watchlist.status = req.body.status;
+        }
+        let updatedWatchlist = await watchlist.save();
+        res.json(updatedWatchlist);
+    } catch (error) {
+        res.json(error.message);
+    }
+})
+
+router.delete('/delete', async(req, res) => {
+    let watchlist;
+    try {
+        watchlist = await Watchlist.findById(req.body.id);
+        await watchlist.remove();
+        res.json({ message: "Successfully Removed from Watchlist !" });
+    } catch (error) {
+        res.json(error.message);
+    }
 })
 
 module.exports = router
