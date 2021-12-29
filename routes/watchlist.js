@@ -14,6 +14,20 @@ router.post('/view', async (req, res) => {
     } catch (error) {
         res.json(error.message);
     }    
+})
+
+router.post('/add', async (req, res) => {
+    let watchlist = new Watchlist({
+        userID: req.body.userID,
+        animeID: req.body.animeID
+    });
+
+    try {
+        const newWatchlist = await watchlist.save();
+        res.json(newWatchlist);
+    } catch (error) {
+        res.json(error.message);
+    }
 
 })
 
