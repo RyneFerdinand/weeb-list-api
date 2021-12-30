@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ratingSchema = new mongoose.Schema({
     userID:{
-        type: Integer,
+        type: String,
         required: true
     },
     animeID:{

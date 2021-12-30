@@ -18,8 +18,10 @@ app.use(cors());
 
 const animeRouter = require("./routes/anime");
 const watchlistRouter = require("./routes/watchlist");
+const ratingRouter = require("./routes/rating");
 
 app.use('/anime', animeRouter);
 app.use('/watchlist', watchlistRouter);
+app.use('/rating', ratingRouter);
 
 app.listen(PORT, () => console.log("Server Started on Port " + PORT))
