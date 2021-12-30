@@ -18,13 +18,6 @@ router.post('/view', async(req, res) => {
 })
 
 router.post('/add', async(req, res) => {
-    console.log(req.body)
-    console.log(
-        req.body.userID + " " +
-        req.body.animeID + " " + 
-        req.body.description + " " + 
-        req.body.rating + " "
-    )
     let rating = new Rating({
         userID: req.body.userID,
         animeID: req.body.animeID,

@@ -5,6 +5,7 @@ const express = require("express");
 const { json } = require("express/lib/response");
 const router = express.Router()
 const Watchlist = require("../models/Watchlist")
+const Rating = require("../models/Rating");
 const API2_URL = process.env.API2_URL;
 
 router.post('/search', async(req, res) => {
@@ -21,7 +22,20 @@ router.post('/view', async (req, res) => {
 
     let watchlistData = [];
     try {
+        Watchlist.aggregate([{
+            $lookup: {
+                from: "ratings",
+                localField: "userID",
+                foreignField: "userID",
+                as: "rating"
+            }
+        }]).exec(function(err, students){
+            students.forEach(student=>{
+                console.log(student.rating)
+            })
+        })
         let watchlist = await Watchlist.find({userID: req.body.userID});
+        
         watchlist.forEach(async (wl, idx) => {
             URL = `${API2_URL}anime/${wl.animeID}?fields=id,title,main_picture`;
             let anime = await axios.get(URL, {
