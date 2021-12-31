@@ -34,6 +34,7 @@ router.post('/add', async(req, res) => {
 })
 
 router.patch('/update', async(req, res) => {
+
     let rating;
     try {
         rating = await Rating.findById(req.body.id);
@@ -55,7 +56,8 @@ router.patch('/update', async(req, res) => {
 router.delete('/delete', async(req, res) => {
     let rating;
     try {
-        rating = await Rating.findById(req.body.id);
+            rating = await Rating.findById(req.body.id);
+        console.log(rating)
         await rating.remove();
         res.json({ message: "Successfully Removed Rating !" });
     } catch (error) {
