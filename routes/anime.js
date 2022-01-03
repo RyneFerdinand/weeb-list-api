@@ -7,12 +7,13 @@ const sortBy = require('../JSON/sortBy.json');
 const seasons = require('../JSON/season.json');
 const carousel = require('../JSON/carousel.json');
 const { json } = require("express/lib/response");
+const Rating = require("../models/Rating");
 const router = express.Router()
 
 const API_URL = process.env.API_URL
 const API2_URL = process.env.API2_URL
 
-router.get('/home', async (req, res) => {
+router.post('/home', async (req, res) => {
     let animeData = {
         carousel: [],
         recommendation: []
@@ -37,6 +38,33 @@ router.get('/home', async (req, res) => {
         res.json(error.message);
     }
     
+    let rating;
+    try {
+      rating = await Rating.findOne({
+        userID: req.body.userID
+      });
+      console.log(rating);
+    } catch (error) {
+      res.json(error.message);
+    }
+
+    let recommendation;
+
+    if(! rating){
+        try {
+            URL = 'https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=10'
+            recommendation = await axios.get(URL, {
+                headers:{
+                    "X-MAL-CLIENT-ID": process.env.CLIENT_ID
+                }
+            })
+        } catch (error) {
+            res.json(error)
+        }
+    } else {
+        
+    }
+
     let animeID = [2904, 39486, 35180, 4181, 32935, 1, 33050, 37521, 40748, 3786];
     animeID.forEach(async (id, idx)=>{
         try {
@@ -86,7 +114,7 @@ router.get('/search', async (req, res) => {
         }
         res.json(anime);
     } catch (error) {
-        res.json(error.message)
+        res.json(error.message);
         
     }
 })

@@ -1,0 +1,139 @@
+GET http://localhost:8080/anime/38671
+
+###
+GET http://localhost:8080/anime/48926
+
+###
+GET http://localhost:8080/anime/top/1
+
+###
+GET http://localhost:8080/anime/genre
+
+###
+GET http://localhost:8080/anime/search
+
+###
+GET http://localhost:8080/anime/search?q=fire
+
+###
+GET http://localhost:8080/anime/search?q=fire
+
+###
+GET http://localhost:8080/anime/test
+
+###
+POST http://localhost:8080/anime/home
+Content-Type: application/json
+
+{
+    "userID": "1"
+}
+
+###
+GET http://localhost:8080/anime/testing
+
+
+###
+POST http://localhost:8080/watchlist/view
+Content-Type: application/json
+
+{
+    "userID": "1"
+}
+
+
+###
+POST http://localhost:8080/watchlist/add
+Content-Type: application/json
+
+{
+    "userID": "1",
+    "animeID": "1"
+}
+
+
+###
+PATCH http://localhost:8080/watchlist/update
+Content-Type: application/json
+
+{
+    "id": "61cd94688268e3cb2e208e4c",
+    "status": "Finished"
+}
+
+
+###
+DELETE http://localhost:8080/watchlist/delete
+Content-Type: application/json
+
+{
+    "id": "61cc78830663ab524411c348"
+}
+
+###
+POST http://localhost:8080/watchlist/search
+Content-Type: application/json
+
+{
+    "userID": "1",
+    "animeID": "16498"
+}
+
+###
+POST http://localhost:8080/rating/add
+Content-Type: application/json
+
+{
+    "userID": "BG12",
+    "animeID": "1",
+    "description": "This is very good !",
+    "rating": 9
+}
+
+###
+POST http://localhost:8080/rating/view
+Content-Type: application/json
+
+{
+    "animeID": "1"
+}
+
+
+###
+POST http://localhost:8080/watchlist/add
+Content-Type: application/json
+
+{
+    "userID": "BG12",
+    "animeID": "1",
+    "description": "great !",
+    "rating": 10 
+}
+
+
+###
+PATCH http://localhost:8080/rating/update
+Content-Type: application/json
+
+{
+    "id": "61cd94688268e3cb2e208e4c",
+    "description": "I changed my mind",
+    "rating": 3
+}
+
+###
+DELETE http://localhost:8080/rating/delete
+Content-Type: application/json
+
+{
+    "id": "61d2b483daa388075a18f862"
+}
+
+###
+POST http://localhost:8080/rating/search
+Content-Type: application/json
+
+{
+    "userID": "1",
+    "animeID": "1"
+}
