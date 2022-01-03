@@ -32,9 +32,8 @@ router.post("/add", async (req, res) => {
       animeID: req.body.animeID,
       rating: req.body.rating,
     };
-    const py = spawn("python", ["./script/updateRating.py", 1]);
-
     
+    const py = spawn("python", ["./script/updateRating.py", 1]);
     py.stdout.on("data", (data) => {
       console.log(data.toString());
     });

@@ -7,7 +7,9 @@ import sys, json
 user_data = sys.stdin.readlines()
 rating = json.loads(user_data[0])
 df = pd.read_csv('./script/rating_complete_smaller.csv')
+
 if int(sys.argv[1]) == 1:
+    print('masuk 1')
     userID = rating["userID"]
     animeID = int(rating["animeID"])
     rate = float(rating["rating"])
@@ -18,6 +20,7 @@ if int(sys.argv[1]) == 1:
 
     print("Successfully Added...")
 elif int(sys.argv[1]) == 2:
+    print('masuk 2')
     userID = rating["userID"]
     animeID = int(rating["animeID"])
 

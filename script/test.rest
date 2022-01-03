@@ -26,7 +26,7 @@ POST http://localhost:8080/anime/home
 Content-Type: application/json
 
 {
-    "userID": "1"
+    "userID": "BG12"
 }
 
 ###
@@ -47,8 +47,8 @@ POST http://localhost:8080/watchlist/add
 Content-Type: application/json
 
 {
-    "userID": "1",
-    "animeID": "1"
+    "userID": "BG12",
+    "animeID": "1324"
 }
 
 
@@ -85,9 +85,9 @@ Content-Type: application/json
 
 {
     "userID": "BG12",
-    "animeID": "1",
+    "animeID": "10",
     "description": "This is very good !",
-    "rating": 9
+    "rating": 5
 }
 
 ###
@@ -126,7 +126,7 @@ DELETE http://localhost:8080/rating/delete
 Content-Type: application/json
 
 {
-    "id": "61d2b483daa388075a18f862"
+    "id": "61d2ed47a7829f48dd674a95"
 }
 
 ###

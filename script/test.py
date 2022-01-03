@@ -1,32 +1,28 @@
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import sys, json
+import numpy as np
 
-neighbor = 10
+neighbor = 10;
 
 user_data = sys.stdin.readlines()
 rating = json.loads(user_data[0])
 
-df = pd.read_csv('./script/rating_complete_smaller.csv')
+user_data = input();
+rating = json.loads(user_data)
+userID = rating["userID"]
 
-if int(sys.argv[1]) == 1:
-  userID = "REC";
-  animeID = rating["animeID"]
-  data = {df.columns[0]: userID, df.columns[1]: animeID, df.columns[2]: 10}
-  df = df.append(data, ignore_index=True)
-else:
-  userID = rating["userID"]
-  
+df = pd.read_csv('./script/rating_complete_smaller.csv', nrows=250000)
 
 df = pd.pivot_table(df, values=['rating'], index=['user_id'], columns=['anime_id'])
 df = df.fillna(0)
 
+recommendationJSON = [];
 
 knn = NearestNeighbors(metric='cosine', algorithm='brute')
 knn.fit(df.values)
-distances, indices = knn.kneighbors(df.values, n_neighbors=neighbor)
+distances, indices = knn.kneighbors(df.values, n_neighbors=10)
 
-recommendedJSON = [];
 
 def get_recommended_movies(user_index, data):
   recommended_movies = []
@@ -35,8 +31,8 @@ def get_recommended_movies(user_index, data):
     if df.iloc[user_index, i] == 0:
       recommended_movies.append((anime_list[i][1], data.iloc[user_index, i]))
   sorted_rm = sorted(recommended_movies, key=lambda x:x[1], reverse=True)
-  for i in range(0, neighbor):
-    recommendedJSON.append(sorted_rm[i][0]);
+  for i in range(0, 5):
+    print('{}: {} - rating: {}'.format(i + 1, sorted_rm[i][0], sorted_rm[i][1]))
 
 def recommender_movies(userID):
   df1 = df.copy()
@@ -47,8 +43,8 @@ def recommender_movies(userID):
     distance_users.pop(similar_users.index(user_index))
     similar_users.remove(user_index)
   else:
-    similar_users = similar_users[:(neighbor - 1)]
-    distance_users = distance_users[:(neighbor - 1)]
+    similar_users = similar_users[:4]
+    distance_users = distance_users[:4]
   for i in range(0, len(df.columns)):
     if df.iloc[user_index, i] == 0:
       user_similarity = [1-x for x in distance_users]
@@ -56,7 +52,7 @@ def recommender_movies(userID):
       nominator = 0
       for j in range(0, len(user_similarity)):
         if df.iloc[similar_users[j], i] == 0:
-          if len(user_similarity_copy) == (neighbor - 1):
+          if len(user_similarity_copy) == 4:
             user_similarity_copy.pop(j)
           else:
             user_similarity_copy.pop(j-(len(user_similarity)-len(user_similarity_copy)))
@@ -70,5 +66,4 @@ def recommender_movies(userID):
 
   get_recommended_movies(user_index, df1)
 
-recommender_movies(userID)
-print(recommendedJSON)
+recommender_movies(4)
