@@ -28,17 +28,17 @@ distances, indices = knn.kneighbors(df.values, n_neighbors=neighbor)
 
 recommendedJSON = [];
 
-def get_recommended_movies(user_index, data):
-  recommended_movies = []
+def get_recommended_animes(user_index, data):
+  recommended_animes = []
   anime_list = data.columns.tolist()
   for i in range(0, len(data.columns)):
     if df.iloc[user_index, i] == 0:
-      recommended_movies.append((anime_list[i][1], data.iloc[user_index, i]))
-  sorted_rm = sorted(recommended_movies, key=lambda x:x[1], reverse=True)
+      recommended_animes.append((anime_list[i][1], data.iloc[user_index, i]))
+  sorted_rm = sorted(recommended_animes, key=lambda x:x[1], reverse=True)
   for i in range(0, neighbor):
     recommendedJSON.append(sorted_rm[i][0]);
 
-def recommender_movies(userID):
+def recommender_animes(userID):
   df1 = df.copy()
   user_index = df.index.tolist().index(userID)
   similar_users = indices[user_index].tolist()
@@ -68,7 +68,7 @@ def recommender_movies(userID):
           predicted_r = nominator/sum(user_similarity_copy)
       df1.iloc[user_index, i] = predicted_r
 
-  get_recommended_movies(user_index, df1)
+  get_recommended_animes(user_index, df1)
 
-recommender_movies(userID)
+recommender_animes(userID)
 print(recommendedJSON)
