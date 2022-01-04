@@ -53,14 +53,15 @@ router.post("/home", async (req, res) => {
 
   if (!rating) {
     try {
-      URL = "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=10";
+      URL =
+        "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=10";
       recommendation = await axios.get(URL, {
         headers: {
           "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
         },
       });
       let newRecommendation = [];
-      recommendation.data.data.forEach(rec => {
+      recommendation.data.data.forEach((rec) => {
         newRecommendation.push(rec.node);
       });
       animeData.recommendation = newRecommendation;
@@ -70,12 +71,14 @@ router.post("/home", async (req, res) => {
     }
   } else {
     let payload = {
-      userID: rating.userID
+      userID: rating.userID,
     };
 
     const py = spawn("python", ["./script/recommend.py", 2]);
     py.stdout.on("data", (data) => {
-      let animeID = JSON.parse("[" + data + "]").toString().split(",")
+      let animeID = JSON.parse("[" + data + "]")
+        .toString()
+        .split(",");
       animeID.forEach(async (id, idx) => {
         try {
           URL = `${API2_URL}anime/${id}?fields=id,title,main_picture`;
@@ -83,7 +86,7 @@ router.post("/home", async (req, res) => {
             headers: {
               "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
             },
-          })
+          });
           animeData.recommendation.push(anime.data);
           if (idx === animeID.length - 1) {
             setTimeout(() => {
@@ -146,9 +149,8 @@ router.get("/season", (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  
   let animeData;
-  
+
   // ambil data anime
   let id = req.params.id;
   let URL = API_URL + "/anime/" + id;
@@ -169,41 +171,39 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     res.json(error.message);
   }
-
-  // ambil rekomendasi
-  let payload = {
-    animeID: id
-  };
-
-  const py = spawn("python", ["./script/recommend.py", 1]);
-
-
-  py.stdout.on("data", (data) => {
-    let animeID = JSON.parse("[" + data + "]").toString().split(",")
-    let recommendations = [];
-    animeID.forEach(async (id, idx) => {
-      try {
-        URL = `${API2_URL}anime/${id}?fields=id,title,main_picture`;
-        let anime = await axios.get(URL, {
-          headers: {
-            "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
-          },
-        })
-        recommendations.push(anime.data);
-        if (idx === animeID.length - 1) {
-          animeData.recommendations = recommendations;
-          setTimeout(() => {
-            res.json(animeData);
-          }, 500);
-        }
-      } catch (error) {
-        res.json(error.message);
-      }
+  
+  let recommendations = [];
+  URL = `${API2_URL}anime/${id}?fields=recommendations`;
+  try {
+    let anime = await axios.get(URL, {
+      headers: {
+        "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
+      },
     });
-  });
 
-  py.stdin.write(JSON.stringify(payload));
-  py.stdin.end();
+    anime.data.recommendations.forEach(anime=>{
+      recommendations.push(anime.node);
+    })
+    animeData.recommendations = recommendations;
+    res.json(animeData);
+  } catch (error) {
+    res.json(error.message);
+  }
+
+  // animeID.forEach(async (id, idx) => {
+  //   try {
+  //     URL = `${API2_URL}anime/${id}?fields=id,title,main_picture`;
+  //     recommendations.push(anime.data);
+  //     if (idx === animeID.length - 1) {
+  //       animeData.recommendations = recommendations;
+  //       setTimeout(() => {
+  //         res.json(animeData);
+  //       }, 500);
+  //     }
+  //   } catch (error) {
+  //     res.json(error.message);
+  //   }
+  // });
 
 });
 

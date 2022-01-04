@@ -68,6 +68,7 @@ router.patch("/update", async (req, res) => {
 
 router.delete("/delete", async (req, res) => {
   let rating;
+  console.log("sampe")
   try {
     rating = await Rating.findById(req.body.id);
     await rating.remove();
