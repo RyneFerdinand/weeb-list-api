@@ -248,15 +248,19 @@ router.get("/getprofile", (req, res) => {
   }
 });
 
-router.get("/dashboard", (req, res) => {
-  let watchlist = 0,
-    finished = 0,
-    watching = 0,
-    planned = 0,
-    review = 0;
+router.get("/dashboard", async (req, res) => {
+
+
+  let watchlist = -1;
+    finished = -1,
+    watching = -1,
+    planned = -1,
+    review = -1;
   Watchlist.find({ userID: req.session.user._id }, (err, foundWatchlist) => {
+    console.log(foundWatchlist)
     if (!err && foundWatchlist) {
       watchlist = foundWatchlist.length;
+      console.log(watchlist);
     }
   });
   Watchlist.find(
@@ -288,13 +292,15 @@ router.get("/dashboard", (req, res) => {
       review = foundRating.length;
     }
   });
-  res.send({
-    watchlist: watchlist,
-    finished: finished,
-    watching: watching,
-    planned: planned,
-    review: review,
-  });
+  setTimeout(() => {
+    res.send({
+      watchlist: watchlist,
+      finished: finished,
+      watching: watching,
+      planned: planned,
+      review: review,
+    });
+  }, 800);
 });
 
 router.post("/changeimage", (req, res) => {
