@@ -43,6 +43,7 @@ router.post("/view", async (req, res) => {
       });
       if (idx === watchlist.length - 1) {
         setTimeout(() => {
+          console.log(watchlistData);
           res.json(watchlistData);
         }, 500);
       }

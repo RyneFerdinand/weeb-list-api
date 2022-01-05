@@ -32,7 +32,8 @@ app.use(session({
     key: "userId",
     secret: "subscribe",
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    expires: new Date(Date.now() + (30 * 86400 * 1000)) 
 }))
 
 
