@@ -39,6 +39,7 @@ router.post("/add", async (req, res) => {
     });
     py.stdin.write(JSON.stringify(payload));
     py.stdin.end();
+    
     res.json(rating);
 
   } catch (error) {
@@ -49,6 +50,7 @@ router.post("/add", async (req, res) => {
 
 router.patch("/update", async (req, res) => {
   let rating;
+  console.log("sampe");
   try {
     rating = await Rating.findById(req.body.id);
     if (req.body.description != null) {
@@ -59,8 +61,25 @@ router.patch("/update", async (req, res) => {
       rating.rating = req.body.rating;
     }
 
+    let payload = {
+      userID: rating.userID,
+      animeID: rating.animeID,
+      rating: rating.rating
+  }
+
     let updatedRating = await rating.save();
-    res.json(updatedRating);
+    const py = spawn("python", ["./script/updateRating.py", 3]);
+
+    py.stdout.on("data", (data) => {
+        console.log(data.toString());
+    });
+
+    py.stdin.write(JSON.stringify(payload));
+    py.stdin.end();
+
+    setTimeout(() => {
+      res.json(updatedRating);
+    }, 500);
   } catch (error) {
     res.json(error.message);
   }
@@ -68,14 +87,13 @@ router.patch("/update", async (req, res) => {
 
 router.delete("/delete", async (req, res) => {
   let rating;
-  console.log("sampe")
   try {
     rating = await Rating.findById(req.body.id);
     await rating.remove();
 
     let payload = {
-        "userID": rating.userID,
-        "animeID": rating.animeID
+        userID: rating.userID,
+        animeID: rating.animeID
     }
     const py = spawn("python", ["./script/updateRating.py", 2]);
 

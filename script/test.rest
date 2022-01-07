@@ -21,12 +21,16 @@ GET http://localhost:8080/anime/search?q=fire
 ###
 GET http://localhost:8080/anime/test
 
+
+###
+POST http://localhost:8080/anime/home
+
 ###
 POST http://localhost:8080/anime/home
 Content-Type: application/json
 
 {
-    "userID": "BG12"
+    "userID": ""
 }
 
 ###
@@ -140,3 +144,6 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/id
+
+###
+GET https://api.jikan.moe/v3/search/anime?q=&field=last_page

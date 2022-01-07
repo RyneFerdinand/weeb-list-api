@@ -27,7 +27,7 @@ router.post("/home", async (req, res) => {
   let season =
     seasons[Math.floor(new Date().getMonth() / 3)].season.toLowerCase();
   let year = new Date().getFullYear();
-  let URL = `${API2_URL}anime/season/${year}/${season}?limit=10`;
+  let URL = `${API2_URL}anime/season/${year}/${season}?limit=20&fields=id,title,media_type,main_picture`;
 
   try {
     let seasonals = await axios.get(URL, {
@@ -37,16 +37,16 @@ router.post("/home", async (req, res) => {
     });
     animeData.seasonal = seasonals.data.data;
   } catch (error) {
-    res.json(error.message);
+    res.json(error);
   }
 
   let rating;
   try {
     rating = await Rating.findOne({
-      userID: req.body.userID,
+      userID: req.session.user === undefined ? "" : req.session.user._id,
     });
   } catch (error) {
-    res.json(error.message);
+    res.json(error);
   }
 
   let recommendation;
@@ -54,18 +54,19 @@ router.post("/home", async (req, res) => {
   if (!rating) {
     try {
       URL =
-        "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=10";
+        "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=10&fields=id,title,media_type,main_picture";
       recommendation = await axios.get(URL, {
         headers: {
           "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
         },
       });
-      let newRecommendation = [];
       recommendation.data.data.forEach((rec) => {
-        newRecommendation.push(rec.node);
+        animeData.recommendation.push(rec.node);
       });
-      animeData.recommendation = newRecommendation;
-      res.json(animeData);
+
+      setTimeout(() => {
+        res.json(animeData);
+      }, 500);
     } catch (error) {
       res.json(error);
     }
@@ -81,7 +82,7 @@ router.post("/home", async (req, res) => {
         .split(",");
       animeID.forEach(async (id, idx) => {
         try {
-          URL = `${API2_URL}anime/${id}?fields=id,title,main_picture`;
+          URL = `${API2_URL}anime/${id}?fields=id,title,media_type,main_picture`;
           let anime = await axios.get(URL, {
             headers: {
               "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
@@ -94,7 +95,7 @@ router.post("/home", async (req, res) => {
             }, 500);
           }
         } catch (error) {
-          res.json(error.message);
+          res.json(error);
         }
       });
     });
@@ -108,7 +109,6 @@ router.get("/search", async (req, res) => {
   let URL = API_URL + "/search/anime?q=";
   if (req.query.q) {
     URL += encodeURI(req.query.q);
-    URL += "&page=1";
   } else {
     if (req.query.season) {
       URL = API_URL + "/season/" + req.query.year + "/" + req.query.season;
@@ -122,17 +122,37 @@ router.get("/search", async (req, res) => {
     }
   }
 
-  try {
-    let anime = await axios.get(URL);
+  console.log("URL = " + URL);
 
-    anime = anime.data;
+  try {
+    let anime;
     if (req.query.season) {
+      anime = await axios.get(URL);
+      anime = anime.data;
       anime["results"] = anime["anime"];
       delete anime["anime"];
+    } else {
+      anime = await axios.get(URL + "&page=" + req.query.page);
+      anime = anime.data;
+      prevPage = parseInt(req.query.page) - 1;
+      nextPage = parseInt(req.query.page) + 1;
+      if (prevPage > 0) {
+        anime.prevPage = true;
+      } else {
+        anime.prevPage = false;
+      }
+
+      try {
+        await axios.get(URL + "&page=" + nextPage);
+        anime.nextPage = true;
+      } catch (error) {
+        anime.nextPage = true;
+      }
     }
+
     res.json(anime);
   } catch (error) {
-    res.json(error.message);
+    res.json(error);
   }
 });
 
@@ -158,7 +178,7 @@ router.get("/:id", async (req, res) => {
     anime = await axios.get(URL);
     animeData = anime.data;
   } catch (error) {
-    res.json(error.message);
+    res.json(error);
   }
 
   // ambil info karakter + va
@@ -169,9 +189,9 @@ router.get("/:id", async (req, res) => {
     characters = await axios.get(URL);
     animeData.characters = characters.data.characters;
   } catch (error) {
-    res.json(error.message);
+    res.json(error);
   }
-  
+
   let recommendations = [];
   URL = `${API2_URL}anime/${id}?fields=recommendations`;
   try {
@@ -181,30 +201,14 @@ router.get("/:id", async (req, res) => {
       },
     });
 
-    anime.data.recommendations.forEach(anime=>{
+    anime.data.recommendations.forEach((anime) => {
       recommendations.push(anime.node);
-    })
+    });
     animeData.recommendations = recommendations;
     res.json(animeData);
   } catch (error) {
-    res.json(error.message);
+    res.json(error);
   }
-
-  // animeID.forEach(async (id, idx) => {
-  //   try {
-  //     URL = `${API2_URL}anime/${id}?fields=id,title,main_picture`;
-  //     recommendations.push(anime.data);
-  //     if (idx === animeID.length - 1) {
-  //       animeData.recommendations = recommendations;
-  //       setTimeout(() => {
-  //         res.json(animeData);
-  //       }, 500);
-  //     }
-  //   } catch (error) {
-  //     res.json(error.message);
-  //   }
-  // });
-
 });
 
 module.exports = router;

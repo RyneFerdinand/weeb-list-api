@@ -29,8 +29,27 @@ let month = [
   "Dec",
 ];
 
+router.post("/id", async (req, res)=>{
+  console.log(req.body.userId);
+  try {
+    let user = await User.findById(req.body.userId);
+    let retUser = {
+      "username": user.username,
+      "profileImage": user.profileImage
+    }
+    res.json(retUser);
+  } catch (error) {
+    res.json(error)
+  }
+  
+})
+
 router.get("/id", (req, res) => {
-  res.send(req.session.user._id);
+  if(typeof req.session.user === typeof undefined){
+    res.send({ message: "Not Logged In" });
+  } else {
+    res.send(req.session.user._id);
+  }
 });
 
 router.post("/register", (req, res) => {
@@ -307,6 +326,7 @@ router.post("/changeimage", (req, res) => {
   User.findById(req.session.user._id, (err, foundUser) => {
     if (!err && foundUser) {
       foundUser.profileImage = req.body.profileImage;
+      req.session.user.profileImage = req.body.profileImage;
       foundUser.save((err) => {
         if (err) {
           res.send({ message: "Change image unsucessful" });
