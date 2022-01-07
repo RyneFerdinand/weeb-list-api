@@ -14,6 +14,21 @@ const spawn = require("child_process").spawn;
 const API_URL = process.env.API_URL;
 const API2_URL = process.env.API2_URL;
 
+router.get("/searchQuery", async (req, res) => {
+  let URL = `${API2_URL}anime?q=${req.query.q}&limit=10&fields=id,title,main_picture`;
+
+  try {
+    let searchData = await axios.get(URL, {
+      headers: {
+        "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
+      },
+    });
+    res.json(searchData.data.data);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 router.post("/home", async (req, res) => {
   let animeData = {
     carousel: [],
@@ -121,8 +136,6 @@ router.get("/search", async (req, res) => {
       URL += req.query.season ? "&season=" + req.query.season : "";
     }
   }
-
-  console.log("URL = " + URL);
 
   try {
     let anime;

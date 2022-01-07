@@ -147,3 +147,9 @@ GET http://localhost:8080/id
 
 ###
 GET https://api.jikan.moe/v3/search/anime?q=&field=last_page
+
+###
+GET http://localhost:8080/anime/searchQuery?q=fire
+
+###
+GET http://localhost:8080/anime/searchQuery?q=fire

@@ -268,13 +268,12 @@ router.get("/getprofile", (req, res) => {
 });
 
 router.get("/dashboard", async (req, res) => {
-
-
   let watchlist = -1;
     finished = -1,
     watching = -1,
     planned = -1,
-    review = -1;
+    review = -1,
+    weebCount = 0;
   Watchlist.find({ userID: req.session.user._id }, (err, foundWatchlist) => {
     console.log(foundWatchlist)
     if (!err && foundWatchlist) {
@@ -311,6 +310,22 @@ router.get("/dashboard", async (req, res) => {
       review = foundRating.length;
     }
   });
+
+  let dateData = req.session.user.joined.split(" ");
+  let dd = dateData[0].length > 1 ? dateData[0] : "0" + dateData[0];
+  let mm = month.indexOf(dateData[1]) + 1;
+  mm = mm.length > 1 ? mm : "0" + mm;
+  let yyyy = dateData[2];
+  let joinDate = new Date(`${yyyy}-${mm}-${dd}`);
+
+  let today = new Date();
+
+  let currDate = new Date(
+    `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+  );
+
+  weebCount = Math.floor((currDate.getTime() - joinDate.getTime()) / (1000 * 3600 * 24));
+
   setTimeout(() => {
     res.send({
       watchlist: watchlist,
@@ -318,6 +333,7 @@ router.get("/dashboard", async (req, res) => {
       watching: watching,
       planned: planned,
       review: review,
+      weebCounter: weebCount
     });
   }, 800);
 });
