@@ -153,3 +153,6 @@ GET http://localhost:8080/anime/searchQuery?q=fire
 
 ###
 GET http://localhost:8080/anime/searchQuery?q=fire
+
+###
+GET https://api.jikan.moe/v3/search/anime?q=&genre=35&order_by=score&sort=desc&limit=50

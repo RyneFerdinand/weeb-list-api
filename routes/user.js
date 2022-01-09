@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 
 router.get("/login", (req, res) => {
   if (req.session.user) {
-    console.log(req.session);
     res.send({ loggedIn: true });
   } else {
     res.send({ loggedIn: false });
@@ -30,7 +29,6 @@ let month = [
 ];
 
 router.post("/id", async (req, res)=>{
-  console.log(req.body.userId);
   try {
     let user = await User.findById(req.body.userId);
     let retUser = {
@@ -117,7 +115,6 @@ router.post("/login", (req, res) => {
     res.send({ message: "All data must be inputted" });
   } else {
     User.findOne({ username: username }, function (err, foundUser) {
-      console.log(foundUser);
       if (err) {
         res.send({ loggedIn: false, message: "Login unsuccessful" });
       } else {
@@ -275,10 +272,8 @@ router.get("/dashboard", async (req, res) => {
     review = -1,
     weebCount = 0;
   Watchlist.find({ userID: req.session.user._id }, (err, foundWatchlist) => {
-    console.log(foundWatchlist)
     if (!err && foundWatchlist) {
       watchlist = foundWatchlist.length;
-      console.log(watchlist);
     }
   });
   Watchlist.find(

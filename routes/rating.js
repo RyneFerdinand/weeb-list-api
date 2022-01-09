@@ -50,7 +50,6 @@ router.post("/add", async (req, res) => {
 
 router.patch("/update", async (req, res) => {
   let rating;
-  console.log("sampe");
   try {
     rating = await Rating.findById(req.body.id);
     if (req.body.description != null) {

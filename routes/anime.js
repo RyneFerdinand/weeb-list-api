@@ -132,7 +132,6 @@ router.get("/search", async (req, res) => {
       URL +=
         "&order_by=" + (req.query.order_by ? req.query.order_by : "members");
       URL += "&sort=desc";
-      URL += "&limit=" + (req.query.limit ? req.query.limit : 50);
       URL += req.query.season ? "&season=" + req.query.season : "";
     }
   }
@@ -140,13 +139,13 @@ router.get("/search", async (req, res) => {
   try {
     let anime;
     if (req.query.season) {
-      anime = await axios.get(URL);
+      anime = await axios.get(URL + "&limit=50");
       anime = anime.data;
       anime["results"] = anime["anime"];
       delete anime["anime"];
     } else {
-      anime = await axios.get(URL + "&page=" + req.query.page);
-      anime = anime.data;
+      anime = await axios.get(URL + "&page=" + req.query.page + "&limit=50");
+        anime = anime.data;
       prevPage = parseInt(req.query.page) - 1;
       nextPage = parseInt(req.query.page) + 1;
       if (prevPage > 0) {
@@ -156,10 +155,10 @@ router.get("/search", async (req, res) => {
       }
 
       try {
-        await axios.get(URL + "&page=" + nextPage);
+        data = await axios.get(URL + "&page=" + nextPage + "&limit=1");
         anime.nextPage = true;
       } catch (error) {
-        anime.nextPage = true;
+        anime.nextPage = false;
       }
     }
 
