@@ -120,7 +120,7 @@ PATCH http://localhost:8080/rating/update
 Content-Type: application/json
 
 {
-    "id": "61cd94688268e3cb2e208e4c",
+    "id": "61d3d2fc0c97b46ff78a7450",
     "description": "I changed my mind",
     "rating": 3
 }

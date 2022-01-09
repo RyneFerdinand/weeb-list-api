@@ -91,6 +91,7 @@ router.post("/home", async (req, res) => {
 
     const py = spawn("python", ["./script/recommend.py"]);
     py.stdout.on("data", (data) => {
+      console.log(data.toString());
       let animeID = JSON.parse("[" + data + "]")
         .toString()
         .split(",");
@@ -114,9 +115,9 @@ router.post("/home", async (req, res) => {
       });
     });
 
-    py.stdout.on("error", function(err){
+    py.stdout.on("error", function (err) {
       console.log(err.toString());
-    })
+    });
 
     py.stdin.write(JSON.stringify(payload));
     py.stdin.end();
@@ -138,6 +139,7 @@ router.get("/search", async (req, res) => {
       URL += req.query.season ? "&season=" + req.query.season : "";
     }
   }
+  console.log(URL)
 
   try {
     let anime;
@@ -147,8 +149,8 @@ router.get("/search", async (req, res) => {
       anime["results"] = anime["anime"];
       delete anime["anime"];
     } else {
-      anime = await axios.get(URL + "&page=" + req.query.page + "&limit=50");
-        anime = anime.data;
+      anime = await axios.get(URL + "&page=" + req.query.page + "&limit=50&field=last_page");
+      anime = anime.data;
       prevPage = parseInt(req.query.page) - 1;
       nextPage = parseInt(req.query.page) + 1;
       if (prevPage > 0) {
@@ -157,12 +159,17 @@ router.get("/search", async (req, res) => {
         anime.prevPage = false;
       }
 
-      try {
-        data = await axios.get(URL + "&page=" + nextPage + "&limit=1");
+      if(nextPage < anime.last_page){
         anime.nextPage = true;
-      } catch (error) {
-        anime.nextPage = false;
+      } else {
+        try {
+          data = await axios.get(URL + "&page=" + nextPage + "&limit=1");
+          anime.nextPage = true;
+        } catch (error) {
+          anime.nextPage = false;
+        }
       }
+
     }
 
     res.json(anime);

@@ -51,7 +51,11 @@ router.post("/add", async (req, res) => {
 router.patch("/update", async (req, res) => {
   let rating;
   try {
-    rating = await Rating.findById(req.body.id);
+    rating = await Rating.findOne({
+      userID: req.body.userID,
+      animeID: req.body.animeID,
+    });
+
     if (req.body.description != null) {
       rating.description = req.body.description;
     }
@@ -59,14 +63,13 @@ router.patch("/update", async (req, res) => {
     if (req.body.rating != null) {
       rating.rating = req.body.rating;
     }
-
     let payload = {
       userID: rating.userID,
       animeID: rating.animeID,
       rating: rating.rating,
     };
 
-    let updatedRating = await rating.save();
+    let newRating = await rating.save();
     const py = spawn("python", ["./script/updateRating.py", 3]);
 
     py.stdout.on("data", (data) => {
@@ -78,7 +81,7 @@ router.patch("/update", async (req, res) => {
     py.stdin.end();
 
     setTimeout(() => {
-      res.json(updatedRating);
+      res.json(newRating);
     }, 500);
   } catch (error) {
     res.json(error.message);

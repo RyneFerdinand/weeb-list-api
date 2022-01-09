@@ -275,7 +275,7 @@ router.get("/dashboard", async (req, res) => {
     planned = -1,
     review = -1,
     weebCount = 0;
-    
+  
   Watchlist.find({ userID: req.session.user._id }, (err, foundWatchlist) => {
     if (!err && foundWatchlist) {
       watchlist = foundWatchlist.length;
