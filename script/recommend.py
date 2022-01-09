@@ -1,27 +1,19 @@
 import pandas as pd
-from sklearn.neighbors import NearestNeighbors
 import sys, json
+import pickle
 
-neighbor = 5
+neighbor = 51
 user_data = sys.stdin.readlines()
 rating = json.loads(user_data[0])
-
 df = pd.read_csv('./script/rating_complete_smaller.csv')
 
-if int(sys.argv[1]) == 1:
-  userID = "REC";
-  animeID = rating["animeID"]
-  data = {df.columns[0]: userID, df.columns[1]: animeID, df.columns[2]: 10}
-  df = df.append(data, ignore_index=True)
-else:
-  userID = rating["userID"]
-  
+userID = rating["userID"]
 
 df = pd.pivot_table(df, values=['rating'], index=['user_id'], columns=['anime_id'])
 df = df.fillna(0)
 
-knn = NearestNeighbors(metric='cosine', algorithm='brute')
-knn.fit(df.values)
+knn = pickle.load(open('./script/recommendation_model', 'rb'))
+
 distances, indices = knn.kneighbors(df.values, n_neighbors=neighbor)
 
 recommendedJSON = [];
@@ -36,7 +28,7 @@ def get_recommended_animes(user_index, data):
       
   sorted_recommended_anime = sorted(recommended_animes, key=lambda x:x[1], reverse=True)
   
-  for i in range(0, 10):
+  for i in range(0, 20):
     recommendedJSON.append(sorted_recommended_anime[i][0]);
 
 def recommender_animes(userID):
@@ -52,7 +44,7 @@ def recommender_animes(userID):
     similar_users = similar_users[:(neighbor - 1)]
     distance_users = distance_users[:(neighbor - 1)]
     
-  for i in range(0, len(df.columns)):
+  for i in range(  len(df.columns)):
     if df.iloc[user_index, i] == 0:
       user_similarity = [1-x for x in distance_users]
       user_similarity_copy = user_similarity.copy()

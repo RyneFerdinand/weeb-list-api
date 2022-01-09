@@ -11,7 +11,6 @@ const bodyParser = require("body-parser");
 const session = require('express-session');
 const cookieParser = require("cookie-parser");
 
-
 mongoose.connect("mongodb+srv://admin-michael:michaelthe23@cluster0.c9aqh.mongodb.net/Weeblist?retryWrites=true&w=majority", {useNewUrlParser: true});
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
@@ -24,7 +23,6 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json())
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 
@@ -35,7 +33,6 @@ app.use(session({
     saveUninitialized: false,
     expires: new Date(Date.now() + (30 * 86400 * 1000)) 
 }))
-
 
 const animeRouter = require("./routes/anime");
 const watchlistRouter = require("./routes/watchlist");

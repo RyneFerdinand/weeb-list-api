@@ -4,6 +4,7 @@ const spawn = require("child_process").spawn;
 const express = require("express");
 const router = express.Router();
 const Rating = require("../models/Rating");
+const retrainModel = require("../utility/train");
 
 router.post("/view", async (req, res) => {
   let rating;
@@ -32,20 +33,19 @@ router.post("/add", async (req, res) => {
       animeID: req.body.animeID,
       rating: req.body.rating,
     };
-    
+
     const py = spawn("python", ["./script/updateRating.py", 1]);
     py.stdout.on("data", (data) => {
+      retrainModel();
       console.log(data.toString());
     });
     py.stdin.write(JSON.stringify(payload));
     py.stdin.end();
-    
-    res.json(rating);
 
+    res.json(rating);
   } catch (error) {
     res.json(error.message);
   }
-
 });
 
 router.patch("/update", async (req, res) => {
@@ -63,14 +63,15 @@ router.patch("/update", async (req, res) => {
     let payload = {
       userID: rating.userID,
       animeID: rating.animeID,
-      rating: rating.rating
-  }
+      rating: rating.rating,
+    };
 
     let updatedRating = await rating.save();
     const py = spawn("python", ["./script/updateRating.py", 3]);
 
     py.stdout.on("data", (data) => {
-        console.log(data.toString());
+      retrainModel();
+      console.log(data.toString());
     });
 
     py.stdin.write(JSON.stringify(payload));
@@ -91,13 +92,14 @@ router.delete("/delete", async (req, res) => {
     await rating.remove();
 
     let payload = {
-        userID: rating.userID,
-        animeID: rating.animeID
-    }
+      userID: rating.userID,
+      animeID: rating.animeID,
+    };
     const py = spawn("python", ["./script/updateRating.py", 2]);
 
     py.stdout.on("data", (data) => {
-        console.log(data.toString());
+      retrainModel();
+      console.log(data.toString());
     });
 
     py.stdin.write(JSON.stringify(payload));

@@ -6,7 +6,6 @@ const genres = require("../JSON/genre.json");
 const sortBy = require("../JSON/sortBy.json");
 const seasons = require("../JSON/season.json");
 const carousel = require("../JSON/carousel.json");
-const { json } = require("express/lib/response");
 const Rating = require("../models/Rating");
 const router = express.Router();
 const spawn = require("child_process").spawn;
@@ -69,7 +68,7 @@ router.post("/home", async (req, res) => {
   if (!rating) {
     try {
       URL =
-        "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=10&fields=id,title,media_type,main_picture";
+        "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=20&genre_exclude=0&fields=id,title,media_type,main_picture";
       recommendation = await axios.get(URL, {
         headers: {
           "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
@@ -90,8 +89,9 @@ router.post("/home", async (req, res) => {
       userID: rating.userID,
     };
 
-    const py = spawn("python", ["./script/recommend.py", 2]);
+    const py = spawn("python", ["./script/recommend.py"]);
     py.stdout.on("data", (data) => {
+      console.log(data.toString())
       let animeID = JSON.parse("[" + data + "]")
         .toString()
         .split(",");
@@ -114,6 +114,10 @@ router.post("/home", async (req, res) => {
         }
       });
     });
+
+    py.stdout.on("error", function(err){
+      console.log(err.toString());
+    })
 
     py.stdin.write(JSON.stringify(payload));
     py.stdin.end();
