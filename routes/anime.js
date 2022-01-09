@@ -91,7 +91,6 @@ router.post("/home", async (req, res) => {
 
     const py = spawn("python", ["./script/recommend.py"]);
     py.stdout.on("data", (data) => {
-      console.log(data.toString())
       let animeID = JSON.parse("[" + data + "]")
         .toString()
         .split(",");
@@ -187,7 +186,6 @@ router.get("/season", (req, res) => {
 router.get("/:id", async (req, res) => {
   let animeData;
 
-  // ambil data anime
   let id = req.params.id;
   let URL = API_URL + "/anime/" + id;
   try {
@@ -197,7 +195,6 @@ router.get("/:id", async (req, res) => {
     res.json(error);
   }
 
-  // ambil info karakter + va
   let characters;
   URL += "/characters_staff";
 

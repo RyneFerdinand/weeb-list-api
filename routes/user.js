@@ -28,6 +28,10 @@ let month = [
   "Dec",
 ];
 
+router.get("/logout", async (req, res)=> {
+  req.session.destroy();
+})
+
 router.post("/id", async (req, res)=>{
   try {
     let user = await User.findById(req.body.userId);
@@ -271,6 +275,7 @@ router.get("/dashboard", async (req, res) => {
     planned = -1,
     review = -1,
     weebCount = 0;
+    
   Watchlist.find({ userID: req.session.user._id }, (err, foundWatchlist) => {
     if (!err && foundWatchlist) {
       watchlist = foundWatchlist.length;
