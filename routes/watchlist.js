@@ -26,27 +26,31 @@ router.post("/view", async (req, res) => {
   try {
     let watchlist = await Watchlist.find({ userID: req.body.userID });
 
-    
-    watchlist.forEach(async (wl, idx) => {
-      URL = `${API2_URL}anime/${wl.animeID}?fields=id,title,main_picture`;
-      let anime = await axios.get(URL, {
-        headers: {
-          "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
-        },
-      });
+    if(watchlist.length === 0){
+      res.json([]);
+    } else {
 
-      let rating = await Rating.findOne({ userID: req.body.userID, animeID: wl.animeID })
-      watchlistData.push({
-        watchlist: wl,
-        anime: anime.data,
-        rating: rating
+      watchlist.forEach(async (wl, idx) => {
+        URL = `${API2_URL}anime/${wl.animeID}?fields=id,title,main_picture`;
+        let anime = await axios.get(URL, {
+          headers: {
+            "X-MAL-CLIENT-ID": process.env.CLIENT_ID,
+          },
+        });
+  
+        let rating = await Rating.findOne({ userID: req.body.userID, animeID: wl.animeID })
+        watchlistData.push({
+          watchlist: wl,
+          anime: anime.data,
+          rating: rating
+        });
+        if (idx === watchlist.length - 1) {
+          setTimeout(() => {
+            res.json(watchlistData);
+          }, 500);
+        }
       });
-      if (idx === watchlist.length - 1) {
-        setTimeout(() => {
-          res.json(watchlistData);
-        }, 500);
-      }
-    });
+    }
   } catch (error) {
     res.json(error.message);
   }

@@ -139,17 +139,18 @@ router.get("/search", async (req, res) => {
       URL += req.query.season ? "&season=" + req.query.season : "";
     }
   }
-  console.log(URL)
-
+  console.log(URL);
   try {
     let anime;
     if (req.query.season) {
-      anime = await axios.get(URL + "&limit=50");
+      anime = await axios.get(URL);
       anime = anime.data;
       anime["results"] = anime["anime"];
       delete anime["anime"];
     } else {
-      anime = await axios.get(URL + "&page=" + req.query.page + "&limit=50&field=last_page");
+      anime = await axios.get(
+        URL + "&page=" + req.query.page + "&field=last_page"
+      );
       anime = anime.data;
       prevPage = parseInt(req.query.page) - 1;
       nextPage = parseInt(req.query.page) + 1;
@@ -159,7 +160,7 @@ router.get("/search", async (req, res) => {
         anime.prevPage = false;
       }
 
-      if(nextPage < anime.last_page){
+      if (nextPage < anime.last_page) {
         anime.nextPage = true;
       } else {
         try {
@@ -169,7 +170,6 @@ router.get("/search", async (req, res) => {
           anime.nextPage = false;
         }
       }
-
     }
 
     res.json(anime);
