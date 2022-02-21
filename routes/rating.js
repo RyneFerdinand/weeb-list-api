@@ -56,6 +56,7 @@ router.patch("/update", async (req, res) => {
       animeID: req.body.animeID,
     });
 
+
     if (req.body.description != null) {
       rating.description = req.body.description;
     }
@@ -102,7 +103,7 @@ router.delete("/delete", async (req, res) => {
 
     py.stdout.on("data", (data) => {
       retrainModel();
-      console.log(data.toString());
+        (data.toString());
     });
 
     py.stdin.write(JSON.stringify(payload));

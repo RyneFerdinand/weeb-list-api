@@ -88,6 +88,7 @@ router.patch("/update", async (req, res) => {
 router.delete("/delete", async (req, res) => {
   let watchlist;
   try {
+    console.log(req.body.userID + " " + req.body.animeID);
     if (req.body.userID != null && req.body.animeID != null) {
       watchlist = await Watchlist.findOne({
         userID: req.body.userID,

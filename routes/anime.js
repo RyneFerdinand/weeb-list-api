@@ -139,7 +139,6 @@ router.get("/search", async (req, res) => {
       URL += req.query.season ? "&season=" + req.query.season : "";
     }
   }
-  console.log(URL);
   try {
     let anime;
     if (req.query.season) {
@@ -147,6 +146,7 @@ router.get("/search", async (req, res) => {
       anime = anime.data;
       anime["results"] = anime["anime"];
       delete anime["anime"];
+      console.log(anime)
     } else {
       anime = await axios.get(
         URL + "&page=" + req.query.page + "&field=last_page"
